@@ -18,19 +18,30 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 17
+          java-version: "17"
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Grant execute permission to Gradle
-        run: chmod +x ./gradlew
+      - name: Find Gradle Wrapper
+        run: |
+          GRADLEW=$(find . -name gradlew | head -n 1)
+          if [ -z "$GRADLEW" ]; then
+            echo "❌ gradlew not found!"
+            exit 1
+          fi
+          chmod +x "$GRADLEW"
+          echo "GRADLEW=$GRADLEW" >> $GITHUB_ENV
+          echo "PROJECT_DIR=$(dirname "$GRADLEW")" >> $GITHUB_ENV
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug
+        run: |
+          cd "$PROJECT_DIR"
+          ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
-          path: app/build/outputs/apk/debug/*.apk
+          path: |
+            **/app/build/outputs/apk/debug/*.apk
