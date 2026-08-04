@@ -1,4 +1,4 @@
-name: Prompt 
+name: Build Android APK
 
 on:
   push:
