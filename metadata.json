@@ -1,0 +1,6 @@
+{
+  "name": "AI App Builder Agent",
+  "description": "Autonomous software engineering agent capable of building, debugging, refactoring, and previewing applications from natural-language prompts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
