@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build and Deploy Node.js to Azure
 
 on:
   push:
@@ -11,37 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - uses: actions/setup-node@v4
         with:
-          distribution: temurin
-          java-version: "17"
+          node-version: 20
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Find Gradle Wrapper
-        run: |
-          GRADLEW=$(find . -name gradlew | head -n 1)
-          if [ -z "$GRADLEW" ]; then
-            echo "❌ gradlew not found!"
-            exit 1
-          fi
-          chmod +x "$GRADLEW"
-          echo "GRADLEW=$GRADLEW" >> $GITHUB_ENV
-          echo "PROJECT_DIR=$(dirname "$GRADLEW")" >> $GITHUB_ENV
-
-      - name: Build Debug APK
-        run: |
-          cd "$PROJECT_DIR"
-          ./gradlew assembleDebug
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-debug-apk
-          path: |
-            **/app/build/outputs/apk/debug/*.apk
+      - run: npm install
+      - run: npm run build --if-present
